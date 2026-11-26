@@ -9,7 +9,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo 'This stage clones SC from GIT repo'				
-				git branch: 'main', url: 'https://github.com/karthikpatelmarkhale/mindcircuit16d_MKP.git'
+				git branch: 'main', url: 'https://github.com/karthikpatelmarkhale/Jenkins_Sonatype_Nexus_Project.git'
             }
         }
 		
