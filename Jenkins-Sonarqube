@@ -1,0 +1,45 @@
+pipeline {
+    agent any
+	
+	tools {
+	
+	maven 'Maven_3.10.2'
+	}
+
+    stages {
+	
+        stage('checkout') {
+            steps {
+                echo 'git checkout stage'
+				git branch: 'main', url: 'https://github.com/karthikpatelmarkhale/Jenkins_Sonatype_Nexus_Project.git'
+            }
+        }
+
+ 		stage('sonarqube scan') {
+            steps {
+                echo 'This stage scans the code using sonarqube'
+                
+                sh ''' mvn -U clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \\
+                      -Dsonar.host.url=http://18.207.177.144:9000 \\
+                      -Dsonar.login=squ_e1d02ea879e795340dec28520bf69754296ef1f9'''
+            }
+    	}
+
+
+        stage('build') {
+            steps {
+                echo 'Building with maven '
+				sh 'mvn clean install '
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo 'Deploying to tomcat'
+				deploy adapters: [tomcat9(alternativeDeploymentContext: '', credentialsId: 'tomcat', path: '', url: 'http://18.207.177.144:8081/')], contextPath: 'KARTHIK-PATEL', war: '**/*.war'
+				
+            }
+        }		
+		
+    }
+}
